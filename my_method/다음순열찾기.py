@@ -17,4 +17,7 @@ def next_permutation(a):
         i += 1
         j -= 1
 
+    # 슬라이싱으로 뒤집기 사용
+    # a[i:] = a[i:][::-1]
+
     return True
