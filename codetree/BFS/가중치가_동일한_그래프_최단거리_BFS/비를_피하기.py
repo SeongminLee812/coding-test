@@ -1,4 +1,6 @@
 # 반대로 쉘터에서 사람에 도착하는 것을 구하면 됨
+# 쉘터를 전부 큐에 넣고 시작하면, 가장 최단거리로 사람이 있는 곳에 도달할 수 있음
+# 쉘터로부터의 step을 전부 기억하고, 사람이 있는, a[x][y] == 2인 곳만 그대로 step을 작성하면 됨
 
 from collections import deque
 
@@ -18,13 +20,8 @@ def can_go(x, y, visited):
         return False
     return True
 
-def bfs(x, y):
-    steps = [[0] * n for _ in range(n)]
-    visited = [[False] * n for _ in range(n)]
-
-    q = deque()
-    visited[x][y] = True
-    q.append((x, y))
+def bfs():
+    global q, visited, steps
 
     dxs = [-1, 1, 0, 0]
     dys = [0, 0, -1, 1]
@@ -36,24 +33,29 @@ def bfs(x, y):
             if can_go(nx, ny, visited):
                 visited[nx][ny] = True
                 steps[nx][ny] = steps[x][y] + 1
-                if a[nx][ny] == 3:
-                    return steps[nx][ny]
                 q.append((nx, ny))
-    return -1
 
-global_q = deque()
+
+# 필요한 배열
+steps = [[0] * n for _ in range(n)]
+visited = [[False] * n for _ in range(n)]
+
+q = deque()
+for i in range(n):
+    for j in range(n):
+        if a[i][j] == 3:
+            visited[i][j] = True
+            q.append((i, j))
+
+bfs()
+
 for i in range(n):
     for j in range(n):
         if a[i][j] == 2:
-            global_q.append((i, j))
-
-# 정답 행렬
-ans = [[0] * n for _ in range(n)]
-
-while global_q:
-    start_x, start_y = global_q.popleft()
-    step_num = bfs(start_x, start_y)
-    ans[start_x][start_y] = step_num
-
-for line in ans:
-    print(" ".join(map(str, line)))
+            if steps[i][j]:
+                print(steps[i][j], end=' ')
+            else:
+                print(-1, end=' ')
+        else:
+            print(0, end=' ')
+    print()
